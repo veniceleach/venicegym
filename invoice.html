@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice - Venice Fitness</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Invoice</h1>
+        <a href="products.html">Back to Store</a>
+    </header>
+    <section class="invoice-container">
+        <h2>Order Summary</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="invoice-items">
+             
+            </tbody>
+        </table>
+        <div class="invoice-summary">
+            <p id="subtotal">Subtotal: $0.00</p>
+            <p id="discount">Discount: $0.00</p>
+            <p id="tax">Tax (10%): $0.00</p>
+            <h3 id="total-price">Total: $0.00</h3>
+        </div>
+        <button onclick="finalizePurchase()">Confirm Purchase</button>
+    </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const storedCart = JSON.parse(localStorage.getItem('cart')) || [];
+            const invoiceItems = document.getElementById('invoice-items');
+            let subtotal = 0;
+            storedCart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.name}</td>
+                    <td>${item.quantity}</td>
+                    <td>$${item.price.toFixed(2)}</td>
+                    <td>$${itemTotal.toFixed(2)}</td>
+                `;
+                invoiceItems.appendChild(row);
+            });
+
+            const tax = subtotal * 0.10;
+            const discount = subtotal > 100 ? subtotal * 0.15 : 0;
+            const total = subtotal + tax - discount;
+
+            document.getElementById('subtotal').textContent = `Subtotal: $${subtotal.toFixed(2)}`;
+            document.getElementById('discount').textContent = `Discount: $${discount.toFixed(2)}`;
+            document.getElementById('tax').textContent = `Tax (10%): $${tax.toFixed(2)}`;
+            document.getElementById('total-price').textContent = `Total: $${total.toFixed(2)}`;
+        });
+
+        function finalizePurchase() {
+            alert('Thank you for your purchase!');
+            localStorage.removeItem('cart'); 
+            window.location.href = 'products.html';
+        }
+    </script>
+</body>
+</html>
